@@ -119,9 +119,13 @@
     }
 
     function handleJWTandCallAjax(ajaxParams) {
-        isTokenExpired() && window.sessionjs.updateToken(true).success(function() {
+        if (isTokenExpired()) {
+            window.sessionjs.updateToken(true).success(function() {
+                $.ajax($.extend({}, baseAjaxParams, ajaxParams));
+            });
+        } else {
             $.ajax($.extend({}, baseAjaxParams, ajaxParams));
-        });
+        }
     }
 
     // function for reporting error to sentry
@@ -1861,7 +1865,7 @@
             url: url,
             success: function (response) {
                 if (response.product !== undefined) {
-                    onSuccess(response.product);
+                    onSuccess(response);
                 } else {
                     onSuccess([]);
                 }
